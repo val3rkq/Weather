@@ -2,13 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/helpers/get_icon.dart';
+import 'package:weather_app/model/weather_model.dart';
 import 'package:weather_app/pages/favourite_page.dart';
+import 'package:weather_app/services/weather_api_client.dart';
 import 'package:weather_app/util/weekly_forecast_tile.dart';
 import 'package:weather_icons/weather_icons.dart';
 import 'package:weather_app/util/today_forecast_tile.dart';
 import 'package:intl/intl.dart';
 import 'package:weather_app/constants.dart';
-import 'package:timezone/standalone.dart' as tz;
+import 'package:weather_app/helpers/get_date.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({Key? key}) : super(key: key);
@@ -18,13 +20,23 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  String currentCity = 'los angeles';
+  // change later
+  String currentCity = 'Sydney';
 
   // this key needs for checking is textformfield empty
   final _formKey = GlobalKey<FormState>();
 
   // controller for textformfield
   final TextEditingController _cityController = TextEditingController();
+
+  // url
+  WeatherApiClient client = WeatherApiClient();
+  Weather? data;
+
+  Future<void> getData(String location) async {
+    data = await client.getCurrentWeather(location);
+    print(data);
+  }
 
   @override
   void dispose() {
@@ -163,341 +175,362 @@ class _HomePageState extends State<HomePage> {
             ),
           ],
         ),
-        body: Container(
-          decoration: BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage("assets/sunny.jpg"),
-              fit: BoxFit.cover,
-            ),
-            borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(25), topRight: Radius.circular(25)),
-          ),
-          child: Stack(
-            children: [
-              Container(
-                color: Color(0x80000000),
-              ),
-              Padding(
-                padding: EdgeInsets.fromLTRB(15, 35, 15, 20),
-                child: ListView(
-                  shrinkWrap: true,
-                  children: [
-                    Column(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        // main info about today weather
-                        Center(
-                          child: Container(
-                            alignment: Alignment.center,
-                            width: 330,
-                            height: 470,
-                            decoration: BoxDecoration(
-                              // color: selectedHomeColor,
-                              color: Colors.transparent,
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            padding: EdgeInsets.fromLTRB(25, 0, 25, 25),
-                            child: Center(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.start,
-                                children: [
-                                  // city
-                                  GestureDetector(
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: Text(
-                                        ' - $currentCity - ',
-                                        style: GoogleFonts.bebasNeue(
-                                          fontSize: 30,
-                                          letterSpacing: 1,
-                                          fontWeight: FontWeight.w700,
-                                          color: Colors.yellowAccent.shade200,
-                                        ),
-                                      ),
-                                    ),
-                                    onTap: changeCity,
-                                  ),
-
-                                  // date
-                                  Text(
-                                    // TODO: fix this problem with local time
-                                    // DateFormat('EEEE, dd MMMM yyyy').format(
-                                    //     tz.TZDateTime.from(DateTime.now(),
-                                    //         tz.getLocation(currentCity))),
-                                    DateFormat('EEEE, dd MMMM yyyy')
-                                        .format(DateTime.now()),
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.bebasNeue(
-                                      color: Colors.white,
-                                      fontSize: 21,
-                                    ),
-                                  ),
-
-                                  // time
-                                  Text(
-                                    DateFormat('HH:mm').format(DateTime.now()),
-                                    textAlign: TextAlign.center,
-                                    style: GoogleFonts.bebasNeue(
-                                      color: Colors.white,
-                                      fontSize: 25,
-                                    ),
-                                  ),
-
-                                  Column(
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    children: [
-                                      // temperature
-                                      Text(
-                                        '  32°',
-                                        style: GoogleFonts.bebasNeue(
-                                          fontSize: 130,
-                                          color: selectedHomeColor,
-                                        ),
-                                      ),
-
-                                      // weather
-                                      Text(
-                                        'Cloudy',
-                                        style: GoogleFonts.bebasNeue(
-                                          fontSize: 25,
-                                          fontWeight: FontWeight.w600,
-                                          letterSpacing: 1.15,
-                                          // backgroundColor: Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                  Divider(
-                                    color: Colors.white,
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-
-                                  // feels like
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.center,
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Padding(
-                                        padding:
-                                            EdgeInsets.only(left: 10, right: 5),
-                                        child: Text(
-                                          'Feels like',
-                                          style: GoogleFonts.bebasNeue(
-                                            fontSize: 22,
-                                          ),
-                                        ),
-                                      ),
-                                      Text(
-                                        ' 34°',
-                                        style: GoogleFonts.bebasNeue(
-                                          fontSize: 27,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-
-                                  // main info
-                                  Container(
-                                    margin: EdgeInsets.only(top: 10),
-                                    width: 300,
-                                    child: Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.spaceEvenly,
-                                      children: [
-                                        // wind's speed
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              CupertinoIcons.wind,
-                                              color: Colors.white,
-                                              // size: 30,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              '4 km / h',
-                                              style: GoogleFonts.bebasNeue(
-                                                  fontSize: 18),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-
-                                        // wind's direction
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              Icons.wind_power_rounded,
-                                              color: Colors.white,
-                                              // size: 30,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              'SE',
-                                              style: GoogleFonts.bebasNeue(
-                                                  fontSize: 18),
-                                            )
-                                          ],
-                                        ),
-                                        SizedBox(
-                                          width: 20,
-                                        ),
-
-                                        // humidity
-                                        Row(
-                                          children: [
-                                            Icon(
-                                              CupertinoIcons.drop_fill,
-                                              color: Colors.white,
-                                              // size: 30,
-                                            ),
-                                            SizedBox(
-                                              width: 5,
-                                            ),
-                                            Text(
-                                              '48 %',
-                                              style: GoogleFonts.bebasNeue(
-                                                  fontSize: 18),
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        ),
-
-                        SizedBox(
-                          height: 15,
-                        ),
-
-                        // today's weather
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              // color: selectedHomeColor,
-                              color: Color(0x33000000),
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                              "today's weather",
-                              style: GoogleFonts.bebasNeue(fontSize: 28),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-
-                        // list view of today's forecast
-                        Container(
-                          height: 120,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              DayForecastTile(
-                                temperature: 16,
-                                time: '08:00',
-                                icon: getIcon('clouds'),
-                              ),
-                              DayForecastTile(
-                                temperature: 19,
-                                time: '11:00',
-                                icon: getIcon('cloud sunny'),
-                              ),
-                              DayForecastTile(
-                                temperature: 22,
-                                time: '14:00',
-                                icon: getIcon(''),
-                              ),
-                              DayForecastTile(
-                                temperature: 21,
-                                time: '17:00',
-                                icon: getIcon('rain'),
-                              ),
-                              DayForecastTile(
-                                temperature: 20,
-                                time: '21:00',
-                                icon: getIcon('thunderstorm'),
-                              ),
-                            ],
-                          ),
-                        ),
-
-                        SizedBox(
-                          height: 35,
-                        ),
-
-                        // weekly forecast
-                        Align(
-                          alignment: Alignment.center,
-                          child: Container(
-                            alignment: Alignment.center,
-                            decoration: BoxDecoration(
-                              color: Colors.black26,
-                              borderRadius: BorderRadius.circular(35),
-                            ),
-                            padding: EdgeInsets.all(20),
-                            child: Text(
-                              'Weekly Forecast',
-                              style: GoogleFonts.bebasNeue(fontSize: 28),
-                            ),
-                          ),
-                        ),
-                        SizedBox(
-                          height: 25,
-                        ),
-
-                        // list view of weekly forecast
-                        Container(
-                          height: 120,
-                          child: ListView(
-                            scrollDirection: Axis.horizontal,
-                            children: [
-                              WeeklyForecastTile(
-                                temperature: 21,
-                                day: '12 sep 2023',
-                              ),
-                              WeeklyForecastTile(
-                                temperature: 25,
-                                day: '13 sep 2023',
-                              ),
-                              WeeklyForecastTile(
-                                temperature: 19,
-                                day: '14 sep 2023',
-                              ),
-                              WeeklyForecastTile(
-                                temperature: 17,
-                                day: '15 sep 2023',
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
+        body: FutureBuilder(
+          future: getData(currentCity),
+          builder: (context, snapshot) {
+            try {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Container(
+                  decoration: BoxDecoration(
+                    image: DecorationImage(
+                      image: AssetImage("assets/${data!.weather}.jpg"),
+                      fit: BoxFit.cover,
                     ),
-                  ],
-                ),
-              ),
-            ],
-          ),
+                    borderRadius: BorderRadius.only(
+                        topLeft: Radius.circular(25),
+                        topRight: Radius.circular(25)),
+                  ),
+                  child: Stack(
+                    children: [
+                      Container(
+                        color: Color(0x80000000),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.fromLTRB(15, 35, 15, 20),
+                        child: ListView(
+                          shrinkWrap: true,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // main info about today weather
+                                Center(
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: 330,
+                                    height: 470,
+                                    decoration: BoxDecoration(
+                                      // color: selectedHomeColor,
+                                      color: Colors.transparent,
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    padding: EdgeInsets.fromLTRB(25, 0, 25, 25),
+                                    child: Center(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        children: [
+                                          // city
+                                          GestureDetector(
+                                            child: Align(
+                                              alignment: Alignment.center,
+                                              child: Text(
+                                                ' - ${data!.cityName} - ',
+                                                style: GoogleFonts.bebasNeue(
+                                                  fontSize: 30,
+                                                  letterSpacing: 1,
+                                                  fontWeight: FontWeight.w700,
+                                                  color: selectedHomeColor,
+                                                ),
+                                              ),
+                                            ),
+                                            onTap: changeCity,
+                                          ),
+
+                                          // date
+                                          Text(
+                                            getDate(data!.timezone),
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.bebasNeue(
+                                              color: Colors.white,
+                                              fontSize: 21,
+                                            ),
+                                          ),
+
+                                          // time
+                                          Text(
+                                            getTime(data!.timezone),
+                                            textAlign: TextAlign.center,
+                                            style: GoogleFonts.bebasNeue(
+                                              color: Colors.white,
+                                              fontSize: 25,
+                                            ),
+                                          ),
+
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            children: [
+                                              // temperature
+                                              Text(
+                                                '  ${data!.temperature}°',
+                                                style: GoogleFonts.bebasNeue(
+                                                  fontSize: 130,
+                                                  color: selectedHomeColor,
+                                                ),
+                                              ),
+
+                                              // weather
+                                              Text(
+                                                "${data!.weather}",
+                                                style: GoogleFonts.bebasNeue(
+                                                  fontSize: 25,
+                                                  fontWeight: FontWeight.w600,
+                                                  letterSpacing: 1.15,
+                                                  // backgroundColor: Colors.black,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Divider(
+                                            color: Colors.white,
+                                          ),
+                                          SizedBox(
+                                            height: 10,
+                                          ),
+
+                                          // feels like
+                                          Row(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.center,
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 10, right: 5),
+                                                child: Text(
+                                                  'Feels like',
+                                                  style: GoogleFonts.bebasNeue(
+                                                    fontSize: 22,
+                                                  ),
+                                                ),
+                                              ),
+                                              Text(
+                                                ' ${data!.feelsLike}°',
+                                                style: GoogleFonts.bebasNeue(
+                                                  fontSize: 27,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          // main info
+                                          Container(
+                                            margin: EdgeInsets.only(top: 10),
+                                            width: 300,
+                                            child: Row(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.center,
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                // wind's speed
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      CupertinoIcons.wind,
+                                                      color: Colors.white,
+                                                      // size: 30,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      '${data!.wind} km / h',
+                                                      style:
+                                                          GoogleFonts.bebasNeue(
+                                                              fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+
+                                                // wind's direction
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      Icons.wind_power_rounded,
+                                                      color: Colors.white,
+                                                      // size: 30,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      '${data!.windDirection}',
+                                                      style:
+                                                          GoogleFonts.bebasNeue(
+                                                              fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                                SizedBox(
+                                                  width: 20,
+                                                ),
+
+                                                // humidity
+                                                Row(
+                                                  children: [
+                                                    Icon(
+                                                      CupertinoIcons.drop_fill,
+                                                      color: Colors.white,
+                                                      // size: 30,
+                                                    ),
+                                                    SizedBox(
+                                                      width: 5,
+                                                    ),
+                                                    Text(
+                                                      '${data!.humidity} %',
+                                                      style:
+                                                          GoogleFonts.bebasNeue(
+                                                              fontSize: 18),
+                                                    )
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+
+                                SizedBox(
+                                  height: 15,
+                                ),
+
+                                // today's weather
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      // color: selectedHomeColor,
+                                      color: Color(0x33000000),
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                      "today's weather",
+                                      style:
+                                          GoogleFonts.bebasNeue(fontSize: 28),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                ),
+
+                                // list view of today's forecast
+                                Container(
+                                  height: 120,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      DayForecastTile(
+                                        temperature: 16,
+                                        time: '08:00',
+                                        icon: getIcon('clouds'),
+                                      ),
+                                      DayForecastTile(
+                                        temperature: 19,
+                                        time: '11:00',
+                                        icon: getIcon('cloud sunny'),
+                                      ),
+                                      DayForecastTile(
+                                        temperature: 22,
+                                        time: '14:00',
+                                        icon: getIcon(''),
+                                      ),
+                                      DayForecastTile(
+                                        temperature: 21,
+                                        time: '17:00',
+                                        icon: getIcon('rain'),
+                                      ),
+                                      DayForecastTile(
+                                        temperature: 20,
+                                        time: '21:00',
+                                        icon: getIcon('thunderstorm'),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+
+                                SizedBox(
+                                  height: 35,
+                                ),
+
+                                // weekly forecast
+                                Align(
+                                  alignment: Alignment.center,
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    decoration: BoxDecoration(
+                                      color: Colors.black26,
+                                      borderRadius: BorderRadius.circular(35),
+                                    ),
+                                    padding: EdgeInsets.all(20),
+                                    child: Text(
+                                      'Weekly Forecast',
+                                      style:
+                                          GoogleFonts.bebasNeue(fontSize: 28),
+                                    ),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: 25,
+                                ),
+
+                                // list view of weekly forecast
+                                Container(
+                                  height: 120,
+                                  child: ListView(
+                                    scrollDirection: Axis.horizontal,
+                                    children: [
+                                      WeeklyForecastTile(
+                                        temperature: 21,
+                                        day: '12 sep 2023',
+                                      ),
+                                      WeeklyForecastTile(
+                                        temperature: 25,
+                                        day: '13 sep 2023',
+                                      ),
+                                      WeeklyForecastTile(
+                                        temperature: 19,
+                                        day: '14 sep 2023',
+                                      ),
+                                      WeeklyForecastTile(
+                                        temperature: 17,
+                                        day: '15 sep 2023',
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ),
+                );
+              } else if (snapshot.connectionState == ConnectionState.waiting) {
+                return Center(
+                  child: CircularProgressIndicator(),
+                );
+              }
+            } catch (error) {
+              print(error.toString());
+            }
+
+            return Container();
+          },
         ),
       ),
     );
