@@ -2,22 +2,17 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:weather_app/constants.dart';
 
-class WeeklyForecastTile extends StatelessWidget {
-  WeeklyForecastTile({
+class WeekForecastTile extends StatelessWidget {
+  WeekForecastTile({
     super.key,
     required this.temperature,
+    required this.icon,
     required this.day,
   });
 
   final int temperature;
+  final IconData icon;
   final String day;
-
-  List<String> icons = [
-    'sunny',
-    'sunny_snowing',
-    'cloud',
-    'cloudy_snowing',
-  ];
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +38,7 @@ class WeeklyForecastTile extends StatelessWidget {
             ),
           ),
           Icon(
-            Icons.cloudy_snowing,
+            icon,
             size: 30,
           ),
           SizedBox(

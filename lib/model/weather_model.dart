@@ -3,6 +3,7 @@ import 'package:weather_app/helpers/get_wind_direction.dart';
 
 class Weather {
   String? cityName;
+  String? countryName;
   int? timezone;
   String? weather;
   int? temperature;
@@ -13,6 +14,7 @@ class Weather {
 
   Weather({
     this.cityName,
+    this.countryName,
     this.timezone,
     this.weather,
     this.temperature,
@@ -26,6 +28,7 @@ class Weather {
   // function to parse JSON file into the model
   Weather.fromJSON(Map<String, dynamic> json) {
     cityName = json['name'];
+    countryName = json['country'];
     timezone = json['timezone'];
     weather = json['weather'][0]['main'].toString().toLowerCase();
     temperature = (json['main']['temp'] - 273).round();
