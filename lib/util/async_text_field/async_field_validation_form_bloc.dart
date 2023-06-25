@@ -34,7 +34,13 @@ class AsyncFieldValidationFormBloc extends FormBloc<String, String> {
     await Future.delayed(const Duration(milliseconds: 500));
     code = await client.getCode(city);
     if (code == 404) {
-      return 'This city is not found';
+      return 'City is not found';
+    }
+    if (code == 401) {
+      return 'API error';
+    }
+    if (code == 500) {
+      return 'Server error';
     }
     return null;
   }

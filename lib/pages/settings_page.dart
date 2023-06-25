@@ -36,6 +36,7 @@ class _SettingsPageState extends State<SettingsPage> {
   }
 
   bool isDialogOpened = false;
+
   // show dialog for changing city
   void changeCity(dynamic formBloc) {
     isDialogOpened = true;
@@ -43,28 +44,27 @@ class _SettingsPageState extends State<SettingsPage> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          backgroundColor: Colors.grey[900],
+          elevation: 0,
+          // backgroundColor: Colors.grey[900],
           content: Container(
             decoration: BoxDecoration(
               color: Colors.transparent,
-              borderRadius: BorderRadius.circular(15),
+              borderRadius: BorderRadius.circular(25),
             ),
             height: 210,
             width: 350,
             child: Center(
               child: Container(
                 child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-
+                    SizedBox(
+                      height: 10,
+                    ),
                     // title
                     Text(
                       'Change your city',
                       style: GoogleFonts.bebasNeue(fontSize: 25),
-                    ),
-
-                    SizedBox(
-                      height: 20,
                     ),
 
                     // seacrh field
@@ -81,9 +81,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                     ),
 
-                    SizedBox(height: 10,),
                     // submit button
-                    SubmitButton(formBloc: formBloc,),
+
+                    SubmitButton(
+                      formBloc: formBloc,
+                    ),
                   ],
                 ),
               ),
@@ -92,7 +94,6 @@ class _SettingsPageState extends State<SettingsPage> {
         );
       },
     ).whenComplete(() {
-
       // make textformfield empty
       formBloc.city.updateInitialValue('');
 
@@ -125,7 +126,6 @@ class _SettingsPageState extends State<SettingsPage> {
                 db.updateMyCity();
               });
 
-
               // make textformfield empty
               formBloc.city.updateInitialValue('');
 
@@ -133,6 +133,13 @@ class _SettingsPageState extends State<SettingsPage> {
               if (isDialogOpened) {
                 Navigator.pop(context);
                 isDialogOpened = false;
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    duration: Duration(hours: 5000),
+                    content:
+                    Text('Close and reopen app to update settings..'),
+                  ),
+                );
               }
             },
             onFailure: (context, state) {
@@ -150,7 +157,7 @@ class _SettingsPageState extends State<SettingsPage> {
                   scrolledUnderElevation: 0,
                   leading: GestureDetector(
                     child: Container(
-                      margin: EdgeInsets.all(7),
+                      margin: EdgeInsets.all(6.5),
                       height: 17,
                       width: 17,
                       decoration: BoxDecoration(
@@ -159,7 +166,6 @@ class _SettingsPageState extends State<SettingsPage> {
                       ),
                       child: Icon(
                         Icons.close_rounded,
-                        size: 28,
                         color: Colors.white,
                       ),
                     ),
@@ -167,10 +173,11 @@ class _SettingsPageState extends State<SettingsPage> {
                       Navigator.pop(context);
                     },
                   ),
+                  centerTitle: true,
                   title: Text(
                     'Settings',
                     style: GoogleFonts.bebasNeue(
-                      fontSize: 25,
+                      fontSize: 27,
                     ),
                   ),
                 ),
@@ -178,14 +185,75 @@ class _SettingsPageState extends State<SettingsPage> {
                   child: Container(
                     alignment: Alignment.topLeft,
                     child: Padding(
-                      padding: EdgeInsets.fromLTRB(16, 0, 16, 30),
+                      padding: EdgeInsets.fromLTRB(16, 10, 16, 20),
                       child: ListView(
                         children: [
                           SettingsTile(
                             onTap: () {
                               changeCity(formBloc);
                             },
-                            city: db.myCity!,
+                            item: db.myCity!,
+                            itemDesc: 'Your city',
+                            icon: CupertinoIcons.placemark_fill,
+                          ),
+                          Padding(
+                            padding: EdgeInsets.all(20),
+                            child: Text(
+                              'Weather units',
+                              style: GoogleFonts.bebasNeue(
+                                fontSize: 25,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ),
+                          SettingsTile(
+                            onTap: () {
+                              setState(() {
+                                if (db.temperatureUnit == '°C') {
+                                  db.temperatureUnit = '°F';
+                                } else {
+                                  db.temperatureUnit = '°C';
+                                }
+                                db.updateDB();
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(hours: 5000),
+                                  content:
+                                  Text('Close and reopen app to update settings..'),
+                                ),
+                              );
+                            },
+                            item: db.temperatureUnit!,
+                            itemDesc: 'Temperature',
+                            icon: CupertinoIcons.thermometer,
+                          ),
+                          SizedBox(
+                            height: 15,
+                          ),
+                          SettingsTile(
+                            onTap: () {
+                              setState(() {
+                                if (db.windSpeedUnit == 'm / s') {
+                                  db.windSpeedUnit = 'km / h';
+                                } else if (db.windSpeedUnit == 'km / h') {
+                                  db.windSpeedUnit = 'mph / h';
+                                } else {
+                                  db.windSpeedUnit = 'm / s';
+                                }
+                                db.updateDB();
+                              });
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                SnackBar(
+                                  duration: Duration(hours: 10),
+                                  content:
+                                  Text('Close and reopen app to update settings..'),
+                                ),
+                              );
+                            },
+                            item: db.windSpeedUnit!,
+                            itemDesc: 'Wind Speed',
+                            icon: Icons.wind_power_rounded,
                           ),
                           SizedBox(
                             height: 15,
@@ -203,4 +271,3 @@ class _SettingsPageState extends State<SettingsPage> {
     );
   }
 }
-

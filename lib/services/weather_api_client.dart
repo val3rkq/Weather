@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:http/http.dart' as http;
-import 'package:weather_app/model/weather_fav_model.dart';
 import 'package:weather_app/model/weather_today_model.dart';
 import 'package:weather_app/model/weather_model.dart';
 import 'package:weather_app/model/weather_week_model.dart';

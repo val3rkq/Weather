@@ -5,11 +5,15 @@ class SettingsTile extends StatelessWidget {
   const SettingsTile({
     Key? key,
     this.onTap,
-    required this.city,
+    required this.item,
+    required this.itemDesc,
+    required this.icon,
   }) : super(key: key);
 
   final Function()? onTap;
-  final String city;
+  final String item;
+  final String itemDesc;
+  final IconData icon;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +21,7 @@ class SettingsTile extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: EdgeInsets.symmetric(horizontal: 25, vertical: 17),
-        margin: EdgeInsets.fromLTRB(15, 15, 15, 0),
+        margin: EdgeInsets.fromLTRB(15, 0, 15, 0),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(15),
           color: Color(0xFF29282C),
@@ -29,13 +33,13 @@ class SettingsTile extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  city,
+                  item,
                   style: GoogleFonts.bebasNeue(
                     fontSize: 25,
                   ),
                 ),
                 Text(
-                  'Your city..',
+                  itemDesc,
                   style: GoogleFonts.bebasNeue(
                     fontSize: 20,
                     color: Colors.grey[500],
@@ -44,7 +48,7 @@ class SettingsTile extends StatelessWidget {
               ],
             ),
             Icon(
-              Icons.location_city_rounded,
+              icon,
               size: 30,
             ),
           ],

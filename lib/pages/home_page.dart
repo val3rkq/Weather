@@ -7,7 +7,6 @@ import 'package:weather_app/helpers/get_icon.dart';
 import 'package:weather_app/model/weather_today_model.dart';
 import 'package:weather_app/model/weather_model.dart';
 import 'package:weather_app/model/weather_week_model.dart';
-import 'package:weather_app/pages/favourite_page.dart';
 import 'package:weather_app/pages/settings_page.dart';
 import 'package:weather_app/services/weather_api_client.dart';
 import 'package:weather_app/util/submit_button.dart';
@@ -15,7 +14,6 @@ import 'package:weather_app/util/week_forecast_tile.dart';
 import 'package:weather_app/util/today_forecast_tile.dart';
 import 'package:weather_app/constants.dart';
 import 'package:weather_app/helpers/get_date_time.dart';
-import 'package:weather_app/util/fav_city_icon.dart';
 import 'package:flutter_form_bloc/flutter_form_bloc.dart';
 
 import 'package:weather_app/util/async_text_field/async_field_validation_form_bloc.dart';
@@ -68,6 +66,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   bool isBottomSheetOpened = false;
+
   // show modal bottom sheet with textformfield for changing city
   void changeCity(dynamic formBloc) {
     isBottomSheetOpened = true;
@@ -164,6 +163,22 @@ class _HomePageState extends State<HomePage> {
 
       isBottomSheetOpened = false;
     });
+  }
+
+  int getTemperature(int temperature, DB db) {
+    if (db.temperatureUnit == '°F') {
+      return (temperature * 9 / 5 + 32).round();
+    }
+    return temperature;
+  }
+
+  int getWindSpeed(int windSpeed, DB db) {
+    if (db.windSpeedUnit == 'km / h') {
+      return (windSpeed * 3.6).round();
+    } else if (db.windSpeedUnit == 'mph / h') {
+      return (windSpeed * 2.2).round();
+    }
+    return windSpeed;
   }
 
   @override
@@ -263,13 +278,16 @@ class _HomePageState extends State<HomePage> {
                       floatingActionButton: FloatingActionButton(
                         disabledElevation: 0,
                         shape: RoundedRectangleBorder(
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(35.0))),
-                        backgroundColor: Colors.black,
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(35.0),
+                          ),
+                        ),
+                        backgroundColor: selectedHomeColor,
                         elevation: 0,
                         child: Center(
                           child: Icon(
                             Icons.update_rounded,
+                            color: Colors.black,
                             size: 27,
                           ),
                         ),
@@ -277,6 +295,8 @@ class _HomePageState extends State<HomePage> {
                           setState(() {});
                         },
                       ),
+                      bottomSheet:
+                          Padding(padding: EdgeInsets.only(bottom: 50)),
                       body: FutureBuilder(
                         future: getData(db.myCity!),
                         builder: (context, snapshot) {
@@ -312,7 +332,8 @@ class _HomePageState extends State<HomePage> {
                                           children: [
                                             Column(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                                                  MainAxisAlignment
+                                                      .spaceBetween,
                                               children: [
                                                 // main info about today weather
                                                 Center(
@@ -323,34 +344,36 @@ class _HomePageState extends State<HomePage> {
                                                     decoration: BoxDecoration(
                                                       color: Colors.transparent,
                                                       borderRadius:
-                                                      BorderRadius.circular(
-                                                          35),
+                                                          BorderRadius.circular(
+                                                              35),
                                                     ),
-                                                    padding: EdgeInsets.fromLTRB(
-                                                        25, 0, 25, 25),
+                                                    padding:
+                                                        EdgeInsets.fromLTRB(
+                                                            25, 0, 25, 25),
                                                     child: Center(
                                                       child: Column(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .start,
+                                                            MainAxisAlignment
+                                                                .start,
                                                         children: [
                                                           // city
                                                           GestureDetector(
                                                             child: Align(
-                                                              alignment: Alignment
-                                                                  .center,
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               child: Text(
                                                                 ' - ${dataNow!.cityName} - ',
                                                                 style: GoogleFonts
                                                                     .bebasNeue(
                                                                   fontSize: 30,
                                                                   letterSpacing:
-                                                                  1,
+                                                                      1,
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .w700,
+                                                                      FontWeight
+                                                                          .w700,
                                                                   color:
-                                                                  selectedHomeColor,
+                                                                      selectedHomeColor,
                                                                 ),
                                                               ),
                                                             ),
@@ -364,11 +387,12 @@ class _HomePageState extends State<HomePage> {
                                                           Text(
                                                             getDate(dataNow!
                                                                 .timezone),
-                                                            textAlign:
-                                                            TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: GoogleFonts
                                                                 .bebasNeue(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 21,
                                                             ),
                                                           ),
@@ -377,31 +401,32 @@ class _HomePageState extends State<HomePage> {
                                                           Text(
                                                             getTime(dataNow!
                                                                 .timezone),
-                                                            textAlign:
-                                                            TextAlign.center,
+                                                            textAlign: TextAlign
+                                                                .center,
                                                             style: GoogleFonts
                                                                 .bebasNeue(
-                                                              color: Colors.white,
+                                                              color:
+                                                                  Colors.white,
                                                               fontSize: 25,
                                                             ),
                                                           ),
 
                                                           Column(
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
+                                                                MainAxisAlignment
+                                                                    .start,
                                                             crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               // temperature
                                                               Text(
-                                                                '  ${dataNow!.temperature}°',
+                                                                '  ${getTemperature(dataNow!.temperature!, db)}°',
                                                                 style: GoogleFonts
                                                                     .bebasNeue(
                                                                   fontSize: 130,
                                                                   color:
-                                                                  selectedHomeColor,
+                                                                      selectedHomeColor,
                                                                 ),
                                                               ),
 
@@ -412,10 +437,10 @@ class _HomePageState extends State<HomePage> {
                                                                     .bebasNeue(
                                                                   fontSize: 25,
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .w600,
+                                                                      FontWeight
+                                                                          .w600,
                                                                   letterSpacing:
-                                                                  1.15,
+                                                                      1.15,
                                                                   // backgroundColor: Colors.black,
                                                                 ),
                                                               ),
@@ -431,27 +456,30 @@ class _HomePageState extends State<HomePage> {
                                                           // feels like
                                                           Row(
                                                             crossAxisAlignment:
-                                                            CrossAxisAlignment
-                                                                .center,
+                                                                CrossAxisAlignment
+                                                                    .center,
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .center,
+                                                                MainAxisAlignment
+                                                                    .center,
                                                             children: [
                                                               Padding(
                                                                 padding: EdgeInsets
                                                                     .only(
-                                                                    left: 10,
-                                                                    right: 5),
+                                                                        left:
+                                                                            10,
+                                                                        right:
+                                                                            5),
                                                                 child: Text(
                                                                   'Feels like',
                                                                   style: GoogleFonts
                                                                       .bebasNeue(
-                                                                    fontSize: 22,
+                                                                    fontSize:
+                                                                        22,
                                                                   ),
                                                                 ),
                                                               ),
                                                               Text(
-                                                                ' ${dataNow!.feelsLike}°',
+                                                                ' ${getTemperature(dataNow!.feelsLike!, db)}°',
                                                                 style: GoogleFonts
                                                                     .bebasNeue(
                                                                   fontSize: 27,
@@ -463,18 +491,18 @@ class _HomePageState extends State<HomePage> {
                                                           // main info
                                                           Container(
                                                             margin:
-                                                            EdgeInsets.only(
-                                                                top: 10),
+                                                                EdgeInsets.only(
+                                                                    top: 10),
                                                             width: 300,
                                                             child: Row(
                                                               crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .center,
+                                                                  CrossAxisAlignment
+                                                                      .center,
                                                               mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .spaceEvenly,
+                                                                  MainAxisAlignment
+                                                                      .spaceEvenly,
                                                               children: [
-                                                                // wind's speed
+                                                                // wind speed
                                                                 Row(
                                                                   children: [
                                                                     Icon(
@@ -488,10 +516,10 @@ class _HomePageState extends State<HomePage> {
                                                                       width: 5,
                                                                     ),
                                                                     Text(
-                                                                      '${dataNow!.wind} m / s',
+                                                                      '${getWindSpeed(dataNow!.wind!, db)} ${db.windSpeedUnit}',
                                                                       style: GoogleFonts.bebasNeue(
                                                                           fontSize:
-                                                                          18),
+                                                                              18),
                                                                     )
                                                                   ],
                                                                 ),
@@ -516,7 +544,7 @@ class _HomePageState extends State<HomePage> {
                                                                       '${dataNow!.windDirection}',
                                                                       style: GoogleFonts.bebasNeue(
                                                                           fontSize:
-                                                                          18),
+                                                                              18),
                                                                     )
                                                                   ],
                                                                 ),
@@ -541,7 +569,7 @@ class _HomePageState extends State<HomePage> {
                                                                       '${dataNow!.humidity} %',
                                                                       style: GoogleFonts.bebasNeue(
                                                                           fontSize:
-                                                                          18),
+                                                                              18),
                                                                     )
                                                                   ],
                                                                 ),
@@ -567,15 +595,15 @@ class _HomePageState extends State<HomePage> {
                                                       // color: selectedHomeColor,
                                                       color: Color(0x33000000),
                                                       borderRadius:
-                                                      BorderRadius.circular(
-                                                          35),
+                                                          BorderRadius.circular(
+                                                              35),
                                                     ),
                                                     padding: EdgeInsets.all(20),
                                                     child: Text(
                                                       "today's weather",
                                                       style:
-                                                      GoogleFonts.bebasNeue(
-                                                          fontSize: 28),
+                                                          GoogleFonts.bebasNeue(
+                                                              fontSize: 28),
                                                     ),
                                                   ),
                                                 ),
@@ -592,8 +620,11 @@ class _HomePageState extends State<HomePage> {
                                                     itemBuilder:
                                                         (context, index) {
                                                       return DayForecastTile(
-                                                        temperature: dataToday!
-                                                            .temperature![index],
+                                                        temperature: getTemperature(
+                                                            dataToday!
+                                                                    .temperature![
+                                                                index],
+                                                            db),
                                                         time: dataToday!
                                                             .dt![index]
                                                             .split(' ')[1]
@@ -603,7 +634,7 @@ class _HomePageState extends State<HomePage> {
                                                       );
                                                     },
                                                     scrollDirection:
-                                                    Axis.horizontal,
+                                                        Axis.horizontal,
                                                   ),
                                                 ),
 
@@ -619,15 +650,15 @@ class _HomePageState extends State<HomePage> {
                                                     decoration: BoxDecoration(
                                                       color: Colors.black26,
                                                       borderRadius:
-                                                      BorderRadius.circular(
-                                                          35),
+                                                          BorderRadius.circular(
+                                                              35),
                                                     ),
                                                     padding: EdgeInsets.all(20),
                                                     child: Text(
                                                       'Forecast for 5 days',
                                                       style:
-                                                      GoogleFonts.bebasNeue(
-                                                          fontSize: 28),
+                                                          GoogleFonts.bebasNeue(
+                                                              fontSize: 28),
                                                     ),
                                                   ),
                                                 ),
@@ -642,14 +673,19 @@ class _HomePageState extends State<HomePage> {
                                                     itemCount: dataWeek!
                                                         .temperature!.length,
                                                     scrollDirection:
-                                                    Axis.horizontal,
-                                                    itemBuilder: (build, index) {
+                                                        Axis.horizontal,
+                                                    itemBuilder:
+                                                        (build, index) {
                                                       return WeekForecastTile(
-                                                        temperature: dataWeek!
-                                                            .temperature![index],
+                                                        temperature: getTemperature(
+                                                            dataWeek!
+                                                                    .temperature![
+                                                                index],
+                                                            db),
                                                         icon: getIcon(dataWeek!
                                                             .weather![index]),
-                                                        day: dataWeek!.dt![index]
+                                                        day: dataWeek!
+                                                            .dt![index]
                                                             .split(' ')[0],
                                                       );
                                                     },
@@ -685,19 +721,22 @@ class _HomePageState extends State<HomePage> {
                       body: Center(
                         child: Container(
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(25),
                             color: Colors.black38,
                           ),
                           width: 350,
                           height: 300,
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.center,
-                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
+                              SizedBox(
+                                height: 15,
+                              ),
                               Text(
                                 'Find your city..',
                                 style: GoogleFonts.bebasNeue(
-                                  fontSize: 20,
+                                  fontSize: 25,
                                   letterSpacing: 2,
                                   color: Colors.white,
                                   decoration: TextDecoration.none,
@@ -706,7 +745,7 @@ class _HomePageState extends State<HomePage> {
                               Form(
                                 key: _formKey,
                                 child: Container(
-                                  margin: EdgeInsets.all(15),
+                                  margin: EdgeInsets.symmetric(horizontal: 15),
                                   padding: EdgeInsets.all(15),
                                   child: TextFieldBlocBuilder(
                                     textFieldBloc: formBloc.city,
@@ -722,7 +761,12 @@ class _HomePageState extends State<HomePage> {
                               ),
 
                               // submit button
-                              SubmitButton(formBloc: formBloc,),
+                              SubmitButton(
+                                formBloc: formBloc,
+                              ),
+                              SizedBox(
+                                height: 15,
+                              ),
                             ],
                           ),
                         ),
