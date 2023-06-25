@@ -11,7 +11,7 @@ void main() async {
   // init Hive
   await Hive.initFlutter();
   var box = await Hive.openBox("mainBox");
-  box.deleteAll(box.keys);
+  // box.deleteAll(box.keys);
   runApp(MyApp());
 }
 
