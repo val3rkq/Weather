@@ -55,16 +55,6 @@ class _HomePageState extends State<HomePage> {
     });
   }
 
-  @override
-  void initState() {
-    if (mainBox.get("HISTORY") == null) {
-      db.initData();
-    } else {
-      db.loadData();
-    }
-    super.initState();
-  }
-
   bool isBottomSheetOpened = false;
 
   // show modal bottom sheet with textformfield for changing city
@@ -179,6 +169,16 @@ class _HomePageState extends State<HomePage> {
       return (windSpeed * 2.2).round();
     }
     return windSpeed;
+  }
+
+  @override
+  void initState() {
+    if (mainBox.get("HISTORY") == null) {
+      db.initData();
+    } else {
+      db.loadData();
+    }
+    super.initState();
   }
 
   @override
@@ -306,8 +306,12 @@ class _HomePageState extends State<HomePage> {
                               return Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-                                    image: AssetImage(
-                                        "assets/${dataNow!.weather}.jpg"),
+
+                                    // clouds can be different :)
+                                    image: AssetImage(dataNow!.weather ==
+                                            'clouds'
+                                        ? "assets/${dataNow!.weatherDesc}.jpg"
+                                        : "assets/${dataNow!.weather}.jpg"),
                                     fit: BoxFit.cover,
                                   ),
                                   borderRadius: BorderRadius.only(

@@ -25,16 +25,6 @@ class _SettingsPageState extends State<SettingsPage> {
   // this key needs for checking is textformfield empty
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  void initState() {
-    if (mainBox.get("HISTORY") == null) {
-      db.initData();
-    } else {
-      db.loadData();
-    }
-    super.initState();
-  }
-
   bool isDialogOpened = false;
 
   // show dialog for changing city
@@ -99,6 +89,16 @@ class _SettingsPageState extends State<SettingsPage> {
 
       isDialogOpened = false;
     });
+  }
+
+  @override
+  void initState() {
+    if (mainBox.get("HISTORY") == null) {
+      db.initData();
+    } else {
+      db.loadData();
+    }
+    super.initState();
   }
 
   @override

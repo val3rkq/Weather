@@ -6,6 +6,7 @@ class Weather {
   String? countryName;
   int? timezone;
   String? weather;
+  String? weatherDesc;
   int? temperature;
   int? feelsLike;
   int? humidity;
@@ -17,6 +18,7 @@ class Weather {
     this.countryName,
     this.timezone,
     this.weather,
+    this.weatherDesc,
     this.temperature,
     this.feelsLike,
     this.humidity,
@@ -31,6 +33,7 @@ class Weather {
     countryName = json['country'];
     timezone = json['timezone'];
     weather = json['weather'][0]['main'].toString().toLowerCase();
+    weatherDesc = json['weather'][0]['description'].toString().toLowerCase();
     temperature = (json['main']['temp'] - 273).round();
     feelsLike = (json['main']['feels_like'] - 273).round();
     humidity = json['main']['humidity'];
