@@ -8,11 +8,13 @@ class DayForecastTile extends StatelessWidget {
     required this.temperature,
     required this.time,
     required this.icon,
+    required this.unit,
   });
 
   final int temperature;
   final String time;
   final IconData icon;
+  final String unit;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +32,7 @@ class DayForecastTile extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Text(
-            '$temperature °С',
+            '$temperature $unit',
             style: GoogleFonts.bebasNeue(
               fontSize: 23,
               fontWeight: FontWeight.w600,

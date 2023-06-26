@@ -306,7 +306,6 @@ class _HomePageState extends State<HomePage> {
                               return Container(
                                 decoration: BoxDecoration(
                                   image: DecorationImage(
-
                                     // clouds can be different :)
                                     image: AssetImage(dataNow!.weather ==
                                             'clouds'
@@ -483,7 +482,7 @@ class _HomePageState extends State<HomePage> {
                                                                 ),
                                                               ),
                                                               Text(
-                                                                ' ${getTemperature(dataNow!.feelsLike!, db)}°',
+                                                                ' ${getTemperature(dataNow!.feelsLike!, db)} ${db.temperatureUnit}',
                                                                 style: GoogleFonts
                                                                     .bebasNeue(
                                                                   fontSize: 27,
@@ -635,6 +634,8 @@ class _HomePageState extends State<HomePage> {
                                                             .substring(0, 5),
                                                         icon: getIcon(dataToday!
                                                             .weather![index]),
+                                                        unit:
+                                                            db.temperatureUnit!,
                                                       );
                                                     },
                                                     scrollDirection:
@@ -691,6 +692,8 @@ class _HomePageState extends State<HomePage> {
                                                         day: dataWeek!
                                                             .dt![index]
                                                             .split(' ')[0],
+                                                        unit:
+                                                            db.temperatureUnit!,
                                                       );
                                                     },
                                                   ),
