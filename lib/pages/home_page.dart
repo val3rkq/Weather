@@ -275,451 +275,459 @@ class _HomePageState extends State<HomePage> {
                           ),
                         ],
                       ),
-                      floatingActionButton: FloatingActionButton(
-                        disabledElevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(35.0),
-                          ),
-                        ),
-                        backgroundColor: selectedHomeColor,
-                        elevation: 0,
-                        child: Center(
-                          child: Icon(
-                            Icons.update_rounded,
-                            color: Colors.black,
-                            size: 27,
-                          ),
-                        ),
-                        onPressed: () {
-                          setState(() {});
-                        },
-                      ),
                       bottomSheet:
                           Padding(padding: EdgeInsets.only(bottom: 50)),
-                      body: FutureBuilder(
-                        future: getData(db.myCity!),
-                        builder: (context, snapshot) {
-                          try {
-                            if (snapshot.connectionState ==
-                                ConnectionState.done) {
-                              return Container(
-                                decoration: BoxDecoration(
-                                  image: DecorationImage(
-                                    // clouds can be different :)
-                                    image: AssetImage(dataNow!.weather ==
-                                            'clouds'
-                                        ? "assets/${dataNow!.weatherDesc}.jpg"
-                                        : "assets/${dataNow!.weather}.jpg"),
-                                    fit: BoxFit.cover,
-                                  ),
-                                  borderRadius: BorderRadius.only(
-                                    topLeft: Radius.circular(25),
-                                    topRight: Radius.circular(25),
-                                  ),
-                                ),
-                                child: Stack(
-                                  children: [
-                                    Container(
-                                      color: Color(0x70000000),
+                      body: RefreshIndicator(
+                        onRefresh: () async {
+                          setState(() {});
+                        },
+                        child: FutureBuilder(
+                          future: getData(db.myCity!),
+                          builder: (context, snapshot) {
+                            try {
+                              if (snapshot.connectionState ==
+                                  ConnectionState.done) {
+                                return Container(
+                                  decoration: BoxDecoration(
+                                    image: DecorationImage(
+                                      // clouds can be different :)
+                                      image: AssetImage(dataNow!.weather ==
+                                              'clouds'
+                                          ? "assets/${dataNow!.weatherDesc}.jpg"
+                                          : "assets/${dataNow!.weather}.jpg"),
+                                      fit: BoxFit.cover,
                                     ),
+                                    borderRadius: BorderRadius.only(
+                                      topLeft: Radius.circular(25),
+                                      topRight: Radius.circular(25),
+                                    ),
+                                  ),
+                                  child: Stack(
+                                    children: [
+                                      Container(
+                                        color: Color(0x70000000),
+                                      ),
 
-                                    Container(
-                                      margin: EdgeInsets.only(top: 50),
-                                      padding:
-                                          EdgeInsets.fromLTRB(15, 0, 15, 25),
-                                      child: SizedBox.expand(
-                                        child: ListView(
-                                          shrinkWrap: true,
-                                          padding: EdgeInsets.all(0),
-                                          children: [
-                                            Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: [
-                                                // main info about today weather
-                                                Center(
-                                                  child: Container(
-                                                    alignment: Alignment.center,
-                                                    width: 330,
-                                                    height: 470,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.transparent,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              35),
-                                                    ),
-                                                    padding:
-                                                        EdgeInsets.fromLTRB(
-                                                            25, 0, 25, 25),
-                                                    child: Center(
-                                                      child: Column(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .start,
-                                                        children: [
-                                                          // city
-                                                          GestureDetector(
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .center,
-                                                              child: Text(
-                                                                ' - ${dataNow!.cityName} - ',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                  fontSize: 30,
-                                                                  letterSpacing:
-                                                                      1,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w700,
-                                                                  color:
-                                                                      selectedHomeColor,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                            onTap: () {
-                                                              changeCity(
-                                                                  formBloc);
-                                                            },
-                                                          ),
-
-                                                          // date
-                                                          Text(
-                                                            getDate(dataNow!
-                                                                .timezone),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: GoogleFonts
-                                                                .bebasNeue(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 21,
-                                                            ),
-                                                          ),
-
-                                                          // time
-                                                          Text(
-                                                            getTime(dataNow!
-                                                                .timezone),
-                                                            textAlign: TextAlign
-                                                                .center,
-                                                            style: GoogleFonts
-                                                                .bebasNeue(
-                                                              color:
-                                                                  Colors.white,
-                                                              fontSize: 25,
-                                                            ),
-                                                          ),
-
-                                                          Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .start,
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              // temperature
-                                                              Text(
-                                                                '  ${getTemperature(dataNow!.temperature!, db)}°',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                  fontSize: 130,
-                                                                  color:
-                                                                      selectedHomeColor,
-                                                                ),
-                                                              ),
-
-                                                              // weather
-                                                              Text(
-                                                                "${dataNow!.weather}",
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                  fontSize: 25,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
-                                                                  letterSpacing:
-                                                                      1.15,
-                                                                  // backgroundColor: Colors.black,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          Divider(
-                                                            color: Colors.white,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 10,
-                                                          ),
-
-                                                          // feels like
-                                                          Row(
-                                                            crossAxisAlignment:
-                                                                CrossAxisAlignment
-                                                                    .center,
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Padding(
-                                                                padding: EdgeInsets
-                                                                    .only(
-                                                                        left:
-                                                                            10,
-                                                                        right:
-                                                                            5),
+                                      Container(
+                                        margin: EdgeInsets.only(top: 50),
+                                        padding:
+                                            EdgeInsets.fromLTRB(15, 0, 15, 25),
+                                        child: SizedBox.expand(
+                                          child: ListView(
+                                            shrinkWrap: true,
+                                            padding: EdgeInsets.all(0),
+                                            children: [
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  // main info about today weather
+                                                  Center(
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      width: 330,
+                                                      height: 470,
+                                                      decoration: BoxDecoration(
+                                                        color:
+                                                            Colors.transparent,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(35),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.fromLTRB(
+                                                              25, 0, 25, 25),
+                                                      child: Center(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .start,
+                                                          children: [
+                                                            // city
+                                                            GestureDetector(
+                                                              child: Align(
+                                                                alignment:
+                                                                    Alignment
+                                                                        .center,
                                                                 child: Text(
-                                                                  'Feels like',
+                                                                  ' - ${dataNow!.cityName} - ',
                                                                   style: GoogleFonts
                                                                       .bebasNeue(
                                                                     fontSize:
-                                                                        22,
+                                                                        30,
+                                                                    letterSpacing:
+                                                                        1,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w700,
+                                                                    color:
+                                                                        selectedHomeColor,
                                                                   ),
                                                                 ),
                                                               ),
-                                                              Text(
-                                                                ' ${getTemperature(dataNow!.feelsLike!, db)} ${db.temperatureUnit}',
-                                                                style: GoogleFonts
-                                                                    .bebasNeue(
-                                                                  fontSize: 27,
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
+                                                              onTap: () {
+                                                                changeCity(
+                                                                    formBloc);
+                                                              },
+                                                            ),
 
-                                                          // main info
-                                                          Container(
-                                                            margin:
-                                                                EdgeInsets.only(
-                                                                    top: 10),
-                                                            width: 300,
-                                                            child: Row(
+                                                            // date
+                                                            Text(
+                                                              getDate(dataNow!
+                                                                  .timezone),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: GoogleFonts
+                                                                  .bebasNeue(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 21,
+                                                              ),
+                                                            ),
+
+                                                            // time
+                                                            Text(
+                                                              getTime(dataNow!
+                                                                  .timezone),
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                              style: GoogleFonts
+                                                                  .bebasNeue(
+                                                                color: Colors
+                                                                    .white,
+                                                                fontSize: 25,
+                                                              ),
+                                                            ),
+
+                                                            Column(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .start,
+                                                              crossAxisAlignment:
+                                                                  CrossAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                // temperature
+                                                                Text(
+                                                                  '  ${getTemperature(dataNow!.temperature!, db)}°',
+                                                                  style: GoogleFonts
+                                                                      .bebasNeue(
+                                                                    fontSize:
+                                                                        130,
+                                                                    color:
+                                                                        selectedHomeColor,
+                                                                  ),
+                                                                ),
+
+                                                                // weather
+                                                                Text(
+                                                                  "${dataNow!.weather}",
+                                                                  style: GoogleFonts
+                                                                      .bebasNeue(
+                                                                    fontSize:
+                                                                        25,
+                                                                    fontWeight:
+                                                                        FontWeight
+                                                                            .w600,
+                                                                    letterSpacing:
+                                                                        1.15,
+                                                                    // backgroundColor: Colors.black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                            Divider(
+                                                              color:
+                                                                  Colors.white,
+                                                            ),
+                                                            SizedBox(
+                                                              height: 10,
+                                                            ),
+
+                                                            // feels like
+                                                            Row(
                                                               crossAxisAlignment:
                                                                   CrossAxisAlignment
                                                                       .center,
                                                               mainAxisAlignment:
                                                                   MainAxisAlignment
-                                                                      .spaceEvenly,
+                                                                      .center,
                                                               children: [
-                                                                // wind speed
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      CupertinoIcons
-                                                                          .wind,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      // size: 30,
+                                                                Padding(
+                                                                  padding: EdgeInsets
+                                                                      .only(
+                                                                          left:
+                                                                              10,
+                                                                          right:
+                                                                              5),
+                                                                  child: Text(
+                                                                    'Feels like',
+                                                                    style: GoogleFonts
+                                                                        .bebasNeue(
+                                                                      fontSize:
+                                                                          22,
                                                                     ),
-                                                                    SizedBox(
-                                                                      width: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      '${getWindSpeed(dataNow!.wind!, db)} ${db.windSpeedUnit}',
-                                                                      style: GoogleFonts.bebasNeue(
-                                                                          fontSize:
-                                                                              18),
-                                                                    )
-                                                                  ],
+                                                                  ),
                                                                 ),
-                                                                SizedBox(
-                                                                  width: 20,
-                                                                ),
-
-                                                                // wind's direction
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      Icons
-                                                                          .wind_power_rounded,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      // size: 30,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      '${dataNow!.windDirection}',
-                                                                      style: GoogleFonts.bebasNeue(
-                                                                          fontSize:
-                                                                              18),
-                                                                    )
-                                                                  ],
-                                                                ),
-                                                                SizedBox(
-                                                                  width: 20,
-                                                                ),
-
-                                                                // humidity
-                                                                Row(
-                                                                  children: [
-                                                                    Icon(
-                                                                      CupertinoIcons
-                                                                          .drop_fill,
-                                                                      color: Colors
-                                                                          .white,
-                                                                      // size: 30,
-                                                                    ),
-                                                                    SizedBox(
-                                                                      width: 5,
-                                                                    ),
-                                                                    Text(
-                                                                      '${dataNow!.humidity} %',
-                                                                      style: GoogleFonts.bebasNeue(
-                                                                          fontSize:
-                                                                              18),
-                                                                    )
-                                                                  ],
+                                                                Text(
+                                                                  ' ${getTemperature(dataNow!.feelsLike!, db)} ${db.temperatureUnit}',
+                                                                  style: GoogleFonts
+                                                                      .bebasNeue(
+                                                                    fontSize:
+                                                                        27,
+                                                                  ),
                                                                 ),
                                                               ],
                                                             ),
-                                                          ),
-                                                        ],
+
+                                                            // main info
+                                                            Container(
+                                                              margin: EdgeInsets
+                                                                  .only(
+                                                                      top: 10),
+                                                              width: 300,
+                                                              child: Row(
+                                                                crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .center,
+                                                                mainAxisAlignment:
+                                                                    MainAxisAlignment
+                                                                        .spaceEvenly,
+                                                                children: [
+                                                                  // wind speed
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        CupertinoIcons
+                                                                            .wind,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        // size: 30,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                      Text(
+                                                                        '${getWindSpeed(dataNow!.wind!, db)} ${db.windSpeedUnit}',
+                                                                        style: GoogleFonts.bebasNeue(
+                                                                            fontSize:
+                                                                                18),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 20,
+                                                                  ),
+
+                                                                  // wind's direction
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        Icons
+                                                                            .wind_power_rounded,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        // size: 30,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                      Text(
+                                                                        '${dataNow!.windDirection}',
+                                                                        style: GoogleFonts.bebasNeue(
+                                                                            fontSize:
+                                                                                18),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                  SizedBox(
+                                                                    width: 20,
+                                                                  ),
+
+                                                                  // humidity
+                                                                  Row(
+                                                                    children: [
+                                                                      Icon(
+                                                                        CupertinoIcons
+                                                                            .drop_fill,
+                                                                        color: Colors
+                                                                            .white,
+                                                                        // size: 30,
+                                                                      ),
+                                                                      SizedBox(
+                                                                        width:
+                                                                            5,
+                                                                      ),
+                                                                      Text(
+                                                                        '${dataNow!.humidity} %',
+                                                                        style: GoogleFonts.bebasNeue(
+                                                                            fontSize:
+                                                                                18),
+                                                                      )
+                                                                    ],
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
                                                       ),
                                                     ),
                                                   ),
-                                                ),
 
-                                                SizedBox(
-                                                  height: 15,
-                                                ),
+                                                  SizedBox(
+                                                    height: 15,
+                                                  ),
 
-                                                // today's weather
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Container(
+                                                  // today's weather
+                                                  Align(
                                                     alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      // color: selectedHomeColor,
-                                                      color: Color(0x33000000),
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              35),
-                                                    ),
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Text(
-                                                      "today's weather",
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 28),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        // color: selectedHomeColor,
+                                                        color:
+                                                            Color(0x33000000),
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(35),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(20),
+                                                      child: Text(
+                                                        "today's weather",
+                                                        style: GoogleFonts
+                                                            .bebasNeue(
+                                                                fontSize: 28),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 25,
-                                                ),
-
-                                                // list view of today's forecast
-                                                Container(
-                                                  height: 120,
-                                                  child: ListView.builder(
-                                                    itemCount: dataToday!
-                                                        .temperature!.length,
-                                                    itemBuilder:
-                                                        (context, index) {
-                                                      return DayForecastTile(
-                                                        temperature: getTemperature(
-                                                            dataToday!
-                                                                    .temperature![
-                                                                index],
-                                                            db),
-                                                        time: dataToday!
-                                                            .dt![index]
-                                                            .split(' ')[1]
-                                                            .substring(0, 5),
-                                                        icon: getIcon(dataToday!
-                                                            .weather![index]),
-                                                        unit:
-                                                            db.temperatureUnit!,
-                                                      );
-                                                    },
-                                                    scrollDirection:
-                                                        Axis.horizontal,
+                                                  SizedBox(
+                                                    height: 25,
                                                   ),
-                                                ),
 
-                                                SizedBox(
-                                                  height: 35,
-                                                ),
+                                                  // list view of today's forecast
+                                                  Container(
+                                                    height: 120,
+                                                    child: ListView.builder(
+                                                      itemCount: dataToday!
+                                                          .temperature!.length,
+                                                      itemBuilder:
+                                                          (context, index) {
+                                                        return DayForecastTile(
+                                                          temperature:
+                                                              getTemperature(
+                                                                  dataToday!
+                                                                          .temperature![
+                                                                      index],
+                                                                  db),
+                                                          time: dataToday!
+                                                              .dt![index]
+                                                              .split(' ')[1]
+                                                              .substring(0, 5),
+                                                          icon: getIcon(
+                                                              dataToday!
+                                                                      .weather![
+                                                                  index]),
+                                                          unit: db
+                                                              .temperatureUnit!,
+                                                        );
+                                                      },
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                    ),
+                                                  ),
 
-                                                // forecast for 5 days
-                                                Align(
-                                                  alignment: Alignment.center,
-                                                  child: Container(
+                                                  SizedBox(
+                                                    height: 35,
+                                                  ),
+
+                                                  // forecast for 5 days
+                                                  Align(
                                                     alignment: Alignment.center,
-                                                    decoration: BoxDecoration(
-                                                      color: Colors.black26,
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                              35),
-                                                    ),
-                                                    padding: EdgeInsets.all(20),
-                                                    child: Text(
-                                                      'Forecast for 5 days',
-                                                      style:
-                                                          GoogleFonts.bebasNeue(
-                                                              fontSize: 28),
+                                                    child: Container(
+                                                      alignment:
+                                                          Alignment.center,
+                                                      decoration: BoxDecoration(
+                                                        color: Colors.black26,
+                                                        borderRadius:
+                                                            BorderRadius
+                                                                .circular(35),
+                                                      ),
+                                                      padding:
+                                                          EdgeInsets.all(20),
+                                                      child: Text(
+                                                        'Forecast for 5 days',
+                                                        style: GoogleFonts
+                                                            .bebasNeue(
+                                                                fontSize: 28),
+                                                      ),
                                                     ),
                                                   ),
-                                                ),
-                                                SizedBox(
-                                                  height: 25,
-                                                ),
+                                                  SizedBox(
+                                                    height: 25,
+                                                  ),
 
-                                                // list view of weekly forecast
-                                                Container(
-                                                  height: 120,
-                                                  child: ListView.builder(
-                                                    itemCount: dataWeek!
-                                                        .temperature!.length,
-                                                    scrollDirection:
-                                                        Axis.horizontal,
-                                                    itemBuilder:
-                                                        (build, index) {
-                                                      return WeekForecastTile(
-                                                        temperature: getTemperature(
-                                                            dataWeek!
-                                                                    .temperature![
-                                                                index],
-                                                            db),
-                                                        icon: getIcon(dataWeek!
-                                                            .weather![index]),
-                                                        day: dataWeek!
-                                                            .dt![index]
-                                                            .split(' ')[0],
-                                                        unit:
-                                                            db.temperatureUnit!,
-                                                      );
-                                                    },
+                                                  // list view of weekly forecast
+                                                  Container(
+                                                    height: 120,
+                                                    child: ListView.builder(
+                                                      itemCount: dataWeek!
+                                                          .temperature!.length,
+                                                      scrollDirection:
+                                                          Axis.horizontal,
+                                                      itemBuilder:
+                                                          (build, index) {
+                                                        return WeekForecastTile(
+                                                          temperature:
+                                                              getTemperature(
+                                                                  dataWeek!
+                                                                          .temperature![
+                                                                      index],
+                                                                  db),
+                                                          icon: getIcon(
+                                                              dataWeek!
+                                                                      .weather![
+                                                                  index]),
+                                                          day: dataWeek!
+                                                              .dt![index]
+                                                              .split(' ')[0],
+                                                          unit: db
+                                                              .temperatureUnit!,
+                                                        );
+                                                      },
+                                                    ),
                                                   ),
-                                                ),
-                                              ],
-                                            ),
-                                          ],
+                                                ],
+                                              ),
+                                            ],
+                                          ),
                                         ),
                                       ),
-                                    ),
-                                    // update weather item
-                                  ],
-                                ),
-                              );
-                            } else if (snapshot.connectionState ==
-                                ConnectionState.waiting) {
-                              return Center(
-                                child: CircularProgressIndicator(),
-                              );
+                                      // update weather item
+                                    ],
+                                  ),
+                                );
+                              } else if (snapshot.connectionState ==
+                                  ConnectionState.waiting) {
+                                return Center(
+                                  child: CircularProgressIndicator(),
+                                );
+                              }
+                            } catch (error) {
+                              print(error.toString());
                             }
-                          } catch (error) {
-                            print(error.toString());
-                          }
 
-                          return Container();
-                        },
+                            return Container();
+                          },
+                        ),
                       ),
                     )
 
