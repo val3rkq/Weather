@@ -1,5 +1,5 @@
 # Weather App
-The Weather Flutter App is a versatile and user-friendly mobile application developed with the Flutter framework. This app provides real-time weather information for any location around the world, empowering users with accurate weather forecasts and current conditions.
+The Weather Flutter App is a versatile and user-friendly mobile application developed with the Flutter framework. This app provides real-time weather information for any location around the world, empowering users with accurate weather forecasts and current conditions. This app has Hive Datebase. I also used HTTP-library for getting weather data from openweathermap.org.
 
 ## Features
 - Real-time Weather Data: Get up-to-the-minute weather updates for any location.
