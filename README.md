@@ -6,8 +6,7 @@ The Weather Flutter App is a versatile and user-friendly mobile application deve
 - Weather Forecast: View a detailed weather forecast for the next 7 days.
 - Location-based Weather: Automatically fetches weather data for your current location.
 - Search: Search for weather information in any city globally.
-- Weather Maps: Visualize weather patterns with interactive maps.
-- Customization: Set your preferred units (Celsius/Fahrenheit) and language.
+- Customization: Set your preferred units (Celsius/Fahrenheit // m\s / km\h).
 
 ## Installation
 Since this application has not yet been uploaded to google play, you can install it by downloading this ZIP-file on your phone 
