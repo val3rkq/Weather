@@ -8,10 +8,6 @@ The Weather Flutter App is a versatile and user-friendly mobile application deve
 - Search: Search for weather information in any city globally.
 - Customization: Set your preferred units (Celsius/Fahrenheit // m\s / km\h).
 
-## Installation
-Since this application has not yet been uploaded to google play, you can install it by downloading this ZIP-file on your phone 
-Link on Google Drive: https://drive.google.com/drive/folders/1D84fmW-yAh9YyLczddNS6uuqgx1_5drv?usp=drive_link
-
 ## License
 This project is licensed under the MIT License - see the LICENSE file for details.
 
