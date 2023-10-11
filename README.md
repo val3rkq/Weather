@@ -16,7 +16,3 @@ We extend our gratitude to the Flutter community for making this project possibl
 Thanks to the weather service providers for their APIs that power this app.
 
 ## Screenshots
-![Screenshot_20230827_204101](https://github.com/val3rkq/Weather/assets/87361814/360ede7e-bde1-4555-9691-8b36f03aebb1)
-![Screenshot_20230827_204044](https://github.com/val3rkq/Weather/assets/87361814/af4f481f-7edc-48fd-8b67-05ec004ecd46)
-![Screenshot_20230827_203902](https://github.com/val3rkq/Weather/assets/87361814/9c25664b-fc1f-43e1-abf1-96a8916e3262)
-
